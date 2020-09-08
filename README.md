@@ -11,7 +11,7 @@ Messing around with [Deno](https://deno.land) + [Spotify API](https://developer.
 ## Run
 
 ```bash
-deno run --allow-read --allow-net spotify-auth.ts
+deno run --allow-read --allow-net --allow-write --unstable spotify-auth.ts
 ```
 
 ### Environment Variables

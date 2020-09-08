@@ -1,9 +1,13 @@
 import { config } from "https://deno.land/x/dotenv/mod.ts";
+import {
+  readJson,
+  writeJson,
+  ensureFile,
+} from "https://deno.land/std/fs/mod.ts";
 import { opine } from "https://deno.land/x/opine@0.21.3/mod.ts";
 import {
   Request,
   Response,
-  ResponseBody,
 } from "https://deno.land/x/opine@0.21.3/src/types.ts";
 
 const app = opine();
@@ -89,11 +93,29 @@ app.get("/success", function (req: Request, res: Response) {
       <p>expires_in: ${expires_in}</p>
     </div>
   `);
+
+  writeJson("./token.json", {
+    access_token: access_token,
+    refresh_token: refresh_token,
+    expires_in: expires_in,
+  }).then((res) => {
+    console.log("res ", res);
+  }).catch((err) => {
+    console.error("err ", err);
+  });
 });
 
 app.get("/failed", function (req: Request, res: Response) {
   res.send("Failed to OAuth with Spotify");
 });
+
+await ensureFile("./token.json");
+try {
+  const tokenFile = await readJson("./token.json");
+  console.log("tokenFile ", tokenFile);
+} catch (err) {
+  console.error("err ", err);
+}
 
 console.log(
   `Listening on port ${PORT}. Go to ${SERVER_ADDRESS}/login to initiate authentication flow.`,
